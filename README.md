@@ -370,6 +370,37 @@ Setelah pertama kali menjalankan aplikasi, Anda perlu membuat akun:
 
 ---
 
+
+## Mockup
+### Dashboard Utama
+![WhatsApp Image 2025-11-09 at 00 49 14_3b07dbb8](https://github.com/user-attachments/assets/205685e1-637b-4ad1-9af7-fe13dac12c2f)
+
+### Register
+![WhatsApp Image 2025-11-09 at 00 49 30_1a02ff4e](https://github.com/user-attachments/assets/dcbe0e00-4b90-491f-ae71-b9fbd663717a)
+
+### Login
+![WhatsApp Image 2025-11-09 at 00 53 41_687dcf31](https://github.com/user-attachments/assets/4e1509f8-fef1-45bd-bb52-9c399f2353cf)
+
+### Katalog Game
+![WhatsApp Image 2025-11-09 at 00 53 41_5ef4ab54](https://github.com/user-attachments/assets/12ced484-ea90-499c-9c25-c71117b93eb7)
+
+### Keranjang Item Belanja
+![WhatsApp Image 2025-11-09 at 00 53 41_ef8de6b0](https://github.com/user-attachments/assets/96e986d8-5208-4f8d-b349-b18e65177066)
+
+### Checkout Item
+![WhatsApp Image 2025-11-09 at 00 53 41_9d753f3b](https://github.com/user-attachments/assets/b26349ac-dc48-484c-a18d-a8bfefcae54f)
+
+### Payment
+![WhatsApp Image 2025-11-09 at 00 53 41_83a06bd7](https://github.com/user-attachments/assets/a6e538bf-13ad-4e5e-9192-07e1a91c295e)
+![WhatsApp Image 2025-11-09 at 00 53 42_af3bebf7](https://github.com/user-attachments/assets/9940d6dc-f7c4-403d-b3d4-f6dffef5fafe)
+
+### History Pesanan
+![WhatsApp Image 2025-11-09 at 00 53 42_a8ba8a9a](https://github.com/user-attachments/assets/94d795d9-4279-4df1-8c13-66f45b8f51de)
+
+### Informasi Akun
+![WhatsApp Image 2025-11-09 at 01 06 36_0d076358](https://github.com/user-attachments/assets/6178bdb7-2ebc-4da8-900e-dfa3f1cbd4ad)
+
+
 ## 🎨 Features Detail
 
 ### Katalog Game
