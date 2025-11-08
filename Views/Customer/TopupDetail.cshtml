@@ -1,0 +1,112 @@
+@model GameTopupStore.Models.GameTopup
+@{
+    ViewData["Title"] = Model.GameName;
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="customer-card">
+    <div class="row">
+        <div class="col-md-4">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded shadow" alt="@Model.GameName" style="width: 100%; border: 3px solid var(--game-cyan);">
+            }
+            else
+            {
+                <div style="height: 400px; background: linear-gradient(135deg, var(--game-dark) 0%, #2d2d2d 100%); display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 3px solid var(--game-cyan);">
+                    <i class="fas fa-gamepad fa-5x" style="color: var(--game-cyan);"></i>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-8">
+            <div class="d-flex gap-2 mb-3">
+                <span class="badge bg-primary" style="font-size: 1rem; padding: 8px 15px;">@Model.GameType</span>
+                <span class="badge bg-info" style="font-size: 1rem; padding: 8px 15px;">@Model.Category</span>
+            </div>
+            <h2 class="mb-3" style="color: var(--game-cyan); font-weight: bold; text-shadow: 0 0 20px rgba(0, 217, 255, 0.8), 2px 2px 4px rgba(0,0,0,0.5);">@Model.GameName</h2>
+            
+            <div class="mb-3" style="background: rgba(0, 217, 255, 0.1); border: 2px solid var(--game-cyan); border-radius: 10px; padding: 15px;">
+                <p class="mb-2" style="color: white; margin: 0;">
+                    <i class="fas fa-coins" style="color: var(--game-gold);"></i> 
+                    <strong style="color: var(--game-gold); font-size: 1.2rem;">@Model.Amount @Model.Category</strong>
+                </p>
+            </div>
+            
+            <p class="mb-3" style="color: white;">
+                <i class="fas fa-tag" style="color: var(--game-cyan);"></i> 
+                <strong style="color: var(--game-cyan);">Jenis Game:</strong> @Model.GameType
+            </p>
+            @if (!string.IsNullOrEmpty(Model.Server))
+            {
+                <p class="mb-3" style="color: white;">
+                    <i class="fas fa-server" style="color: var(--game-cyan);"></i> 
+                    <strong style="color: var(--game-cyan);">Server:</strong> @Model.Server
+                </p>
+            }
+
+            <h3 class="mb-3" style="color: #4caf50; font-weight: bold;">Rp @Model.Price.ToString("N0")</h3>
+
+            <div class="mb-4">
+                @if (Model.Stock > 10)
+                {
+                    <span class="badge bg-success" style="font-size: 1rem; padding: 8px 15px;">
+                        <i class="fas fa-check"></i> Stok Tersedia (@Model.Stock)
+                    </span>
+                }
+                else if (Model.Stock > 0)
+                {
+                    <span class="badge bg-warning" style="font-size: 1rem; padding: 8px 15px; color: var(--game-dark);">
+                        <i class="fas fa-exclamation"></i> Stok Terbatas (@Model.Stock)
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-danger" style="font-size: 1rem; padding: 8px 15px;">
+                        <i class="fas fa-times"></i> Stok Habis
+                    </span>
+                }
+            </div>
+
+            @if (Model.Stock > 0)
+            {
+                <form method="post" asp-action="AddToCart" asp-controller="Customer">
+                    <input type="hidden" name="topupId" value="@Model.Id" />
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label" style="color: var(--game-cyan);">Jumlah:</label>
+                            <input type="number" name="quantity" class="form-control" value="1" min="1" max="@Model.Stock" />
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-pirate btn-lg">
+                            <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+                        </button>
+                        <a asp-action="Catalog" class="btn btn-treasure btn-lg">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="d-flex gap-2">
+                    <button class="btn btn-secondary btn-lg" disabled>
+                        <i class="fas fa-times"></i> Stok Habis
+                    </button>
+                    <a asp-action="Catalog" class="btn btn-treasure btn-lg">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <hr class="my-4" style="border-color: var(--game-cyan);">
+
+    <h4 style="color: var(--game-cyan); font-weight: bold; margin-bottom: 20px;">
+        <i class="fas fa-info-circle"></i> Deskripsi
+    </h4>
+    <p style="color: white; line-height: 1.8; text-align: justify;">@Model.Description</p>
+</div>
+

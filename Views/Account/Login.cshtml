@@ -1,0 +1,228 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - GameTopupStore</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+    :root {
+        --pirate-black: #1a1a1a;
+        --pirate-red: #d32f2f;
+        --pirate-gold: #ffd700;
+        --straw-yellow: #f4c430;
+    }
+    
+    body {
+        background: linear-gradient(135deg, var(--pirate-black) 0%, #2d2d2d 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .login-container {
+        max-width: 450px;
+        width: 100%;
+        padding: 20px;
+    }
+    
+    .login-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        border: 3px solid var(--pirate-gold);
+        overflow: hidden;
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, var(--pirate-black) 0%, #2d2d2d 100%);
+        padding: 40px 30px;
+        text-align: center;
+        border-bottom: 4px solid var(--pirate-gold);
+    }
+    
+    .login-header i {
+        font-size: 3rem;
+        color: var(--pirate-gold);
+        margin-bottom: 15px;
+    }
+    
+    .login-header h2 {
+        color: var(--pirate-gold);
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .login-header p {
+        color: var(--straw-yellow);
+        margin: 5px 0 0 0;
+        font-size: 0.9rem;
+    }
+    
+    .login-body {
+        padding: 40px 30px;
+    }
+    
+    .form-floating {
+        margin-bottom: 20px;
+    }
+    
+    .form-floating > .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 1rem 0.75rem;
+        height: 60px;
+    }
+    
+    .form-floating > .form-control:focus {
+        border-color: var(--pirate-gold);
+        box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    }
+    
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+        color: #666;
+    }
+    
+    .btn-login {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, var(--pirate-red) 0%, #c62828 100%);
+        border: 2px solid var(--pirate-gold);
+        border-radius: 12px;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(211, 47, 47, 0.4);
+        color: white;
+    }
+    
+    .divider {
+        text-align: center;
+        margin: 25px 0;
+        position: relative;
+        color: #999;
+    }
+    
+    .divider::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background: #ddd;
+    }
+    
+    .divider::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background: #ddd;
+    }
+    
+    .register-link {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .register-link a {
+        color: var(--pirate-red);
+        font-weight: bold;
+        text-decoration: none;
+    }
+    
+    .register-link a:hover {
+        color: var(--pirate-gold);
+        text-decoration: underline;
+    }
+    
+    .back-home {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .back-home a {
+        color: var(--pirate-gold);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .back-home a:hover {
+        color: var(--straw-yellow);
+    }
+</style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-skull-crossbones"></i>
+                <h2>GameTopupStore</h2>
+                <p>Masuk ke Akun Anda</p>
+            </div>
+
+            <div class="login-body">
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> @ViewBag.Error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form method="post" asp-action="Login">
+                    <div class="form-floating">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Email" required />
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password"
+                            required />
+                        <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Masuk
+                    </button>
+                </form>
+
+                <div class="divider">atau</div>
+
+                <div class="register-link">
+                    Belum punya akun?
+                    <a asp-action="Register">Daftar Sekarang <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-home">
+            <a asp-controller="Home" asp-action="Index">
+                <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

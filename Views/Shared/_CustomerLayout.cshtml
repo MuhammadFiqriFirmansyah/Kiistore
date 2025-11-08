@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GameTopupStore</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/customer.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body class="customer-body">
+    <!-- Sidebar -->
+    <div class="customer-sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-gamepad"></i>
+            <h4>GameTopupStore</h4>
+            <p class="mb-0">Customer Portal</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Context.Session.GetString("UserId")))
+        {
+            <div class="customer-user-info">
+                <i class="fas fa-user"></i>
+                <span>@Context.Session.GetString("UserName")</span>
+            </div>
+        }
+
+        <nav class="sidebar-nav">
+            <a asp-controller="Customer" asp-action="Home" class="nav-item">
+                <i class="fas fa-home"></i> Beranda
+            </a>
+            <a asp-controller="Customer" asp-action="Catalog" class="nav-item">
+                <i class="fas fa-gamepad"></i> Katalog Game
+            </a>
+
+            @if (!string.IsNullOrEmpty(Context.Session.GetString("UserId")))
+            {
+                <a asp-controller="Customer" asp-action="Cart" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i> Keranjang
+                </a>
+                <a asp-controller="Customer" asp-action="MyOrders" class="nav-item">
+                    <i class="fas fa-shopping-bag"></i> Pesanan Saya
+                </a>
+                <a asp-controller="Account" asp-action="Profile" class="nav-item">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+                <a asp-controller="Account" asp-action="Logout" class="nav-item nav-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="nav-item">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </a>
+                <a asp-controller="Account" asp-action="Register" class="nav-item">
+                    <i class="fas fa-user-plus"></i> Daftar
+                </a>
+            }
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="customer-content">
+        <div class="customer-topbar">
+            <h5 class="mb-0">@ViewData["Title"]</h5>
+            <div>
+                <span class="text-white">
+                    <i class="fas fa-gamepad"></i> Level Up Your Game!
+                </span>
+            </div>
+        </div>
+
+        <div class="customer-main">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

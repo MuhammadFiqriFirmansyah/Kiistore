@@ -1,0 +1,88 @@
+@model GameTopupStore.Models.Cart
+@{
+    ViewData["Title"] = "Keranjang Belanja";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="customer-card">
+    <div class="customer-card-header">
+        <h4><i class="fas fa-shopping-cart"></i> Keranjang Belanja</h4>
+        <a asp-action="Catalog" class="btn btn-admin-secondary">
+            <i class="fas fa-arrow-left"></i> Lanjut Belanja
+        </a>
+    </div>
+
+    @if (Model == null || Model.Items.Count == 0)
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Keranjang kosong. Yuk belanja game topup!
+        </div>
+        <a asp-action="Catalog" class="btn btn-pirate">
+            <i class="fas fa-gamepad"></i> Lihat Katalog
+        </a>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Game Topup</th>
+                        <th class="text-center">Harga</th>
+                        <th class="text-center">Jumlah</th>
+                        <th class="text-end">Subtotal</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td><strong>@item.GameTopupName</strong></td>
+                            <td class="text-center">Rp @item.Price.ToString("N0")</td>
+                            <td class="text-center">
+                                <form method="post" asp-action="UpdateCartItem" class="d-inline">
+                                    <input type="hidden" name="topupId" value="@item.GameTopupId" />
+                                    <div class="input-group" style="width: 120px; margin: 0 auto;">
+                                        <button type="submit" name="quantity" value="@(item.Quantity - 1)"
+                                            class="btn btn-sm btn-outline-secondary">-</button>
+                                        <input type="text" class="form-control form-control-sm text-center"
+                                            value="@item.Quantity" readonly>
+                                        <button type="submit" name="quantity" value="@(item.Quantity + 1)"
+                                            class="btn btn-sm btn-outline-secondary">+</button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-end"><strong>Rp @((item.Price * item.Quantity).ToString("N0"))</strong></td>
+                            <td class="text-center">
+                                <a asp-action="RemoveFromCart" asp-route-topupId="@item.GameTopupId" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Hapus item ini?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="table-active">
+                        <td colspan="3" class="text-end">
+                            <h5 class="mb-0">TOTAL:</h5>
+                        </td>
+                        <td class="text-end">
+                            <h4 class="text-success mb-0">
+                                Rp @Model.Items.Sum(i => i.Price * i.Quantity).ToString("N0")
+                            </h4>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="text-end mt-4">
+            <a asp-action="Checkout" class="btn btn-pirate btn-lg">
+                <i class="fas fa-credit-card"></i> Checkout
+            </a>
+        </div>
+    }
+</div>

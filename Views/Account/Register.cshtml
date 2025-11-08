@@ -1,0 +1,241 @@
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - GameTopupStore</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --pirate-black: #1a1a1a;
+            --pirate-red: #d32f2f;
+            --pirate-gold: #ffd700;
+            --straw-yellow: #f4c430;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--pirate-black) 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .register-container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid var(--pirate-gold);
+            overflow: hidden;
+        }
+
+        .register-header {
+            background: linear-gradient(135deg, var(--pirate-black) 0%, #2d2d2d 100%);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 4px solid var(--pirate-gold);
+        }
+
+        .register-header i {
+            font-size: 2.5rem;
+            color: var(--pirate-gold);
+            margin-bottom: 10px;
+        }
+
+        .register-header h2 {
+            color: var(--pirate-gold);
+            font-weight: bold;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .register-header p {
+            color: var(--straw-yellow);
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        .register-body {
+            padding: 30px;
+        }
+
+        .form-floating {
+            margin-bottom: 15px;
+        }
+
+        .form-floating>.form-control,
+        .form-floating>.form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1rem 0.75rem;
+            height: 60px;
+        }
+
+        .form-floating>textarea.form-control {
+            height: 100px;
+            padding-top: 1.5rem;
+        }
+
+        .form-floating>.form-control:focus,
+        .form-floating>.form-select:focus {
+            border-color: var(--pirate-gold);
+            box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+        }
+
+        .form-floating>label {
+            padding: 1rem 0.75rem;
+            color: #666;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--pirate-red) 0%, #c62828 100%);
+            border: 2px solid var(--pirate-gold);
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(211, 47, 47, 0.4);
+            color: white;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: var(--pirate-red);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            color: var(--pirate-gold);
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: var(--pirate-gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-home a:hover {
+            color: var(--straw-yellow);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <i class="fas fa-user-plus"></i>
+                <h2>Daftar Akun Baru</h2>
+                <p>Bergabunglah dengan GameTopupStore</p>
+            </div>
+
+            <div class="register-body">
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> @ViewBag.Error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form method="post" asp-action="Register">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" name="FullName" class="form-control" id="fullname"
+                                    placeholder="Nama Lengkap" required />
+                                <label for="fullname"><i class="fas fa-user"></i> Nama Lengkap</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" name="Username" class="form-control" id="username"
+                                    placeholder="Username" required />
+                                <label for="username"><i class="fas fa-at"></i> Username</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="email" name="Email" class="form-control" id="email" placeholder="Email" required />
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="password" name="Password" class="form-control" id="password"
+                                    placeholder="Password" required minlength="6" />
+                                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="tel" name="PhoneNumber" class="form-control" id="phone"
+                                    placeholder="No. Telepon" required />
+                                <label for="phone"><i class="fas fa-phone"></i> No. Telepon</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating">
+                        <textarea name="Address" class="form-control" id="address" placeholder="Alamat"
+                            required></textarea>
+                        <label for="address"><i class="fas fa-map-marker-alt"></i> Alamat Lengkap</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-register">
+                        <i class="fas fa-user-plus"></i> Daftar Sekarang
+                    </button>
+                </form>
+
+                <div class="login-link">
+                    Sudah punya akun?
+                    <a asp-action="Login">Masuk <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-home">
+            <a asp-controller="Home" asp-action="Index">
+                <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

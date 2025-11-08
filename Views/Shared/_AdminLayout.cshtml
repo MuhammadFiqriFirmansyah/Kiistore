@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body class="admin-body">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-gamepad"></i>
+            <h4>GameTopupStore</h4>
+            <p class="mb-0">Admin Panel</p>
+        </div>
+
+        <div class="admin-user-info">
+            <i class="fas fa-user-shield"></i>
+            <span>@Context.Session.GetString("UserName")</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a asp-controller="Admin" asp-action="Dashboard" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a asp-controller="Admin" asp-action="Topups" class="nav-item">
+                <i class="fas fa-gamepad"></i> Kelola Game Topup
+            </a>
+            <a asp-controller="Admin" asp-action="Orders" class="nav-item">
+                <i class="fas fa-shopping-cart"></i> Kelola Pesanan
+            </a>
+            <a asp-controller="Admin" asp-action="Users" class="nav-item">
+                <i class="fas fa-users"></i> Kelola User
+            </a>
+            <a asp-controller="Account" asp-action="Logout" class="nav-item nav-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-content">
+        <div class="admin-topbar">
+            <h5 class="mb-0">@ViewData["Title"]</h5>
+            <div>
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-main">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

@@ -1,0 +1,169 @@
+@model GameTopupStore.Models.Order
+@{
+    ViewData["Title"] = "Pembayaran QRIS";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="customer-card">
+    <div class="customer-card-header">
+        <h4><i class="fas fa-qrcode"></i> Pembayaran QRIS</h4>
+        <span class="badge bg-warning">Order ID: #@Model.Id.Substring(0, 8)</span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4" style="border: 3px solid var(--game-cyan); background: rgba(0, 217, 255, 0.05);">
+                <div class="card-body text-center">
+                    <h5 class="mb-3" style="color: var(--game-cyan);">
+                        <i class="fas fa-qrcode"></i> Scan QR Code untuk Pembayaran
+                    </h5>
+                    
+                    <!-- QR Code Placeholder -->
+                    <div style="background: white; padding: 30px; border-radius: 15px; display: inline-block; margin: 20px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.3);">
+                        <div style="width: 300px; height: 300px; background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); display: flex; align-items: center; justify-content: center; border: 3px solid var(--game-cyan); border-radius: 10px;">
+                            <div class="text-center">
+                                <i class="fas fa-qrcode" style="font-size: 5rem; color: var(--game-cyan); opacity: 0.3;"></i>
+                                <p class="mt-3" style="color: #666; font-size: 0.9rem;">QR Code akan muncul di sini</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>Cara Pembayaran:</strong><br>
+                        1. Buka aplikasi e-wallet atau mobile banking Anda<br>
+                        2. Pilih menu Scan QRIS<br>
+                        3. Scan QR code di atas<br>
+                        4. Konfirmasi pembayaran
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border: 3px solid var(--game-purple); background: rgba(139, 92, 246, 0.05);">
+                <div class="card-body">
+                    <h5 style="color: var(--game-purple); margin-bottom: 20px;">
+                        <i class="fas fa-receipt"></i> Detail Pembayaran
+                    </h5>
+                    <table class="table">
+                        <tr>
+                            <td><strong>Total Pembayaran:</strong></td>
+                            <td class="text-end">
+                                <h4 class="text-success mb-0">Rp @Model.TotalAmount.ToString("N0")</h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Metode Pembayaran:</strong></td>
+                            <td class="text-end">
+                                <span class="badge bg-info">@Model.PaymentMethod</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Status Pembayaran:</strong></td>
+                            <td class="text-end">
+                                @if (Model.PaymentStatus == "Paid")
+                                {
+                                    <span class="badge bg-success">Lunas</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Menunggu Pembayaran</span>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4" style="border: 3px solid var(--game-gold); background: rgba(251, 191, 36, 0.05);">
+                <div class="card-body">
+                    <h5 style="color: var(--game-gold); margin-bottom: 20px;">
+                        <i class="fas fa-gamepad"></i> Informasi Game Account
+                    </h5>
+                    <table class="table">
+                        <tr>
+                            <td><strong>Game Account:</strong></td>
+                            <td style="color: white;">@Model.GameAccount</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Server:</strong></td>
+                            <td style="color: white;">@Model.Server</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mb-4" style="border: 3px solid var(--game-cyan);">
+                <div class="card-body">
+                    <h5 style="color: var(--game-cyan); margin-bottom: 20px;">
+                        <i class="fas fa-box"></i> Item Pesanan
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td style="color: white;">@item.GameTopupName</td>
+                                        <td class="text-center" style="color: white;">@item.Quantity</td>
+                                        <td class="text-end" style="color: white;">Rp @((item.Price * item.Quantity).ToString("N0"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr style="background: rgba(0, 217, 255, 0.2);">
+                                    <td colspan="2" class="text-end"><strong>TOTAL:</strong></td>
+                                    <td class="text-end">
+                                        <strong style="color: var(--game-cyan);">Rp @Model.TotalAmount.ToString("N0")</strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.PaymentStatus == "Pending")
+            {
+                <form method="post" asp-action="ConfirmPayment" onsubmit="return confirm('Apakah Anda sudah melakukan pembayaran?')">
+                    <input type="hidden" name="orderId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-pirate btn-lg w-100">
+                        <i class="fas fa-check-circle"></i> Konfirmasi Pembayaran
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a asp-action="OrderSuccess" asp-route-orderId="@Model.Id" class="btn btn-treasure btn-lg w-100">
+                    <i class="fas fa-check"></i> Pembayaran Berhasil
+                </a>
+            }
+
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-exclamation-triangle"></i> 
+                <strong>Penting:</strong> Jangan tutup halaman ini sebelum pembayaran selesai. 
+                Setelah pembayaran, klik tombol "Konfirmasi Pembayaran".
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+    }
+</style>
+

@@ -1,0 +1,198 @@
+@model List<GameTopupStore.Models.GameTopup>
+@{
+    ViewData["Title"] = "Katalog Game Topup";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="row mt-4">
+    <div class="col-12">
+        <h2><i class="fas fa-gamepad"></i> Katalog Game Topup</h2>
+        <p class="text-muted">Jelajahi koleksi topup game kami dan tingkatkan level permainanmu! 🎮</p>
+    </div>
+</div>
+
+<!-- Search & Filter -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form method="get" asp-action="Catalog" class="input-group">
+            <input type="hidden" name="gameType" value="@ViewBag.SelectedGameType" />
+            <input type="hidden" name="category" value="@ViewBag.SelectedCategory" />
+            <input type="text" name="search" class="form-control" placeholder="Cari nama game atau jenis game..." value="@ViewBag.SearchQuery">
+            <button type="submit" class="btn btn-pirate">
+                <i class="fas fa-search"></i> Cari
+            </button>
+        </form>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" style="color: var(--game-cyan); margin-bottom: 5px;"><i class="fas fa-gamepad"></i> Filter Game</label>
+        <select class="form-control" onchange="window.location.href='/Customer/Catalog?gameType=' + encodeURIComponent(this.value) + '&category=@(ViewBag.SelectedCategory ?? "")&search=@(ViewBag.SearchQuery ?? "")'">
+            <option value="">Semua Game</option>
+            <option value="MLBB" selected="@(ViewBag.SelectedGameType == "MLBB")">🎮 Mobile Legends (MLBB)</option>
+            <option value="HOK" selected="@(ViewBag.SelectedGameType == "HOK")">👑 Honor of Kings (HOK)</option>
+            <option value="AOV" selected="@(ViewBag.SelectedGameType == "AOV")">⚔️ Arena of Valor (AOV)</option>
+            <option value="PUBG" selected="@(ViewBag.SelectedGameType == "PUBG")">🔫 PUBG Mobile</option>
+            <option value="Free Fire" selected="@(ViewBag.SelectedGameType == "Free Fire")">💥 Free Fire</option>
+            <option value="Roblox" selected="@(ViewBag.SelectedGameType == "Roblox")">🎲 Roblox</option>
+            <option value="COC" selected="@(ViewBag.SelectedGameType == "COC")">🏰 Clash of Clans (COC)</option>
+            @if (ViewBag.GameTypes != null)
+            {
+                var standardGames = new[] { "MLBB", "HOK", "AOV", "PUBG", "Free Fire", "Roblox", "COC" };
+                @foreach (var gt in ViewBag.GameTypes)
+                {
+                    @if (!standardGames.Contains(gt as string ?? ""))
+                    {
+                        <option value="@gt" selected="@(ViewBag.SelectedGameType == gt)">@gt</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" style="color: var(--game-cyan); margin-bottom: 5px;"><i class="fas fa-coins"></i> Filter Currency</label>
+        <select class="form-control" onchange="window.location.href='/Customer/Catalog?category=' + encodeURIComponent(this.value) + '&gameType=@(ViewBag.SelectedGameType ?? "")&search=@(ViewBag.SearchQuery ?? "")'">
+            <option value="">Semua Currency</option>
+            @if (ViewBag.Categories != null)
+            {
+                @foreach (var cat in ViewBag.Categories)
+                {
+                    <option value="@cat" selected="@(ViewBag.SelectedCategory == cat)">@cat</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+
+<!-- Game Topups Grid -->
+@if (Model == null || Model.Count == 0)
+{
+    <div class="alert alert-warning" style="background: rgba(251, 191, 36, 0.1); border: 2px solid var(--game-gold); color: var(--game-gold);">
+        <i class="fas fa-exclamation-triangle"></i> 
+        <strong>Tidak ada game topup ditemukan.</strong>
+        <br>
+        <small>Silakan coba filter lain atau hubungi admin untuk menambahkan game topup.</small>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var topup in Model)
+        {
+            <div class="col-md-3">
+                <div class="card h-100 book-card">
+                    @{
+                        string imageUrl = topup.ImageUrl;
+                        if (string.IsNullOrEmpty(imageUrl))
+                        {
+                            // Default images berdasarkan game type
+                            switch (topup.GameType)
+                            {
+                                case "MLBB":
+                                    imageUrl = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=300&fit=crop";
+                                    break;
+                                case "HOK":
+                                    imageUrl = "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop";
+                                    break;
+                                case "AOV":
+                                    imageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop";
+                                    break;
+                                case "PUBG":
+                                    imageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop";
+                                    break;
+                                case "Free Fire":
+                                    imageUrl = "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=400&h=300&fit=crop";
+                                    break;
+                                case "Roblox":
+                                    imageUrl = "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=300&fit=crop";
+                                    break;
+                                case "COC":
+                                    imageUrl = "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop";
+                                    break;
+                                default:
+                                    imageUrl = "";
+                                    break;
+                            }
+                        }
+                    }
+                    @if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        <div style="position: relative; height: 300px; overflow: hidden; border-radius: 8px 8px 0 0;">
+                            <img src="@imageUrl" class="card-img-top" alt="@topup.GameName" 
+                                 style="height: 100%; width: 100%; object-fit: cover; transition: transform 0.3s ease;"
+                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'height: 300px; background: linear-gradient(135deg, var(--game-dark) 0%, #2d2d2d 100%); display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--game-cyan);\'><i class=\'fas fa-gamepad fa-4x mb-2\'></i><span>@topup.GameType</span></div>';">
+                            <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 5px;">
+                                <span class="badge" style="background: var(--game-cyan);">@topup.GameType</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="height: 300px; background: linear-gradient(135deg, var(--game-dark) 0%, #2d2d2d 100%); display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--game-cyan); border-radius: 8px 8px 0 0;">
+                            <i class="fas fa-gamepad fa-5x mb-3" style="color: var(--game-cyan);"></i>
+                            <span style="font-size: 1.2rem; font-weight: bold;">@topup.GameType</span>
+                        </div>
+                    }
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex gap-2 mb-2 flex-wrap">
+                            <span class="badge" style="background: var(--game-cyan); font-size: 0.75rem;">@topup.GameType</span>
+                            <span class="badge" style="background: var(--game-purple); font-size: 0.75rem;">@topup.Category</span>
+                        </div>
+                        <h5 class="card-title" style="color: var(--game-cyan); min-height: 48px;">@topup.GameName</h5>
+                        <div class="mb-2" style="background: rgba(0, 217, 255, 0.1); border: 2px solid var(--game-cyan); border-radius: 8px; padding: 10px;">
+                            <p class="mb-0" style="color: var(--game-gold); font-weight: bold; font-size: 1.1rem;">
+                                <i class="fas fa-coins"></i> @topup.Amount @topup.Category
+                            </p>
+                        </div>
+                        @if (!string.IsNullOrEmpty(topup.Server))
+                        {
+                            <p class="card-text text-muted mb-2">
+                                <small><i class="fas fa-server"></i> Server: @topup.Server</small>
+                            </p>
+                        }
+                        <p class="card-text flex-grow-1" style="color: #ccc; font-size: 0.9rem;">
+                            @(topup.Description.Length > 80 ? topup.Description.Substring(0, 80) + "..." : topup.Description)
+                        </p>
+                        <div class="mt-auto">
+                            <h4 class="text-success mb-3">Rp @topup.Price.ToString("N0")</h4>
+                            @if (topup.Stock > 0)
+                            {
+                                <div class="d-grid gap-2">
+                                    <a asp-action="TopupDetail" asp-route-id="@topup.Id" class="btn btn-pirate">
+                                        <i class="fas fa-eye"></i> Lihat Detail
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary w-100" disabled>
+                                    <i class="fas fa-times"></i> Stok Habis
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<style>
+.book-card {
+    transition: all 0.3s ease;
+    border: 2px solid var(--game-cyan);
+    overflow: hidden;
+}
+
+.book-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+    border-color: var(--game-purple);
+}
+
+.book-card:hover img {
+    transform: scale(1.1);
+}
+
+.book-card img {
+    transition: transform 0.3s ease;
+}
+</style>

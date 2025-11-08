@@ -1,0 +1,336 @@
+@model GameTopupStore.Models.GameTopup
+@{
+    ViewData["Title"] = "Edit Game Topup";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h4><i class="fas fa-edit"></i> Edit Game Topup: @Model.GameName</h4>
+        <a asp-action="Topups" class="btn btn-admin-secondary">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+    </div>
+
+    <form method="post" asp-action="EditTopup" asp-route-id="@Model.Id">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Jenis Game *</label>
+                    <select name="GameType" id="gameType" class="admin-form-control" required onchange="updateCategoryOptions()">
+                        <option value="">Pilih Jenis Game</option>
+                        <option value="MLBB" selected="@(Model.GameType == "MLBB" || Model.GameType == "Mobile Legends: Bang Bang")">🎮 Mobile Legends: Bang Bang (MLBB)</option>
+                        <option value="HOK" selected="@(Model.GameType == "HOK" || Model.GameType == "Honor of Kings")">👑 Honor of Kings (HOK)</option>
+                        <option value="AOV" selected="@(Model.GameType == "AOV" || Model.GameType == "Arena of Valor")">⚔️ Arena of Valor (AOV)</option>
+                        <option value="PUBG" selected="@(Model.GameType == "PUBG" || Model.GameType == "PUBG Mobile")">🔫 PUBG Mobile</option>
+                        <option value="Free Fire" selected="@(Model.GameType == "Free Fire")">💥 Free Fire</option>
+                        <option value="Roblox" selected="@(Model.GameType == "Roblox")">🎲 Roblox</option>
+                        <option value="COC" selected="@(Model.GameType == "COC" || Model.GameType == "Clash of Clans")">🏰 Clash of Clans (COC)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Nama Game (Display) *</label>
+                    <input type="text" name="GameName" id="gameName" class="admin-form-control" value="@Model.GameName" required />
+                    <small class="text-muted">Nama yang ditampilkan di katalog</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Server *</label>
+                    <input type="text" name="Server" class="admin-form-control" value="@Model.Server" required />
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Mata Uang Game *</label>
+                    <select name="Category" id="category" class="admin-form-control" required>
+                        <option value="">Pilih Mata Uang</option>
+                        <!-- Options akan diupdate oleh JavaScript -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Jumlah <span id="currencyLabel">*</span></label>
+                    <select name="Amount" id="amount" class="admin-form-control" required onchange="updateAmountInput()">
+                        <option value="">Pilih Jumlah</option>
+                        <!-- Options akan diupdate oleh JavaScript berdasarkan game type -->
+                    </select>
+                    <input type="number" name="Amount" id="amountInput" class="admin-form-control mt-2" value="@Model.Amount" min="1" style="display: none;" />
+                    <small class="text-muted" id="amountHint">Pilih jumlah topup atau isi manual</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Harga (Rp) *</label>
+                    <input type="number" name="Price" class="admin-form-control" value="@Model.Price" min="0" required />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Stok *</label>
+                    <input type="number" name="Stock" class="admin-form-control" value="@Model.Stock" min="0" required />
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-form-group">
+            <label class="admin-form-label">URL Gambar Game</label>
+            <input type="url" name="ImageUrl" id="imageUrl" class="admin-form-control" value="@Model.ImageUrl" />
+            <small class="text-muted">
+                <i class="fas fa-info-circle"></i> Opsional: Link gambar game. Akan otomatis terisi jika memilih game type.
+            </small>
+            <div class="mt-2">
+                <button type="button" class="btn btn-sm" style="background: var(--game-cyan); color: white;" onclick="previewImage()">
+                    <i class="fas fa-eye"></i> Preview Gambar
+                </button>
+            </div>
+            <div id="imagePreview" class="mt-3" style="display: none;">
+                <img id="previewImg" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid var(--game-cyan);" />
+            </div>
+        </div>
+
+        <div class="admin-form-group">
+            <label class="admin-form-label">Deskripsi *</label>
+            <textarea name="Description" class="admin-form-control" rows="5" required>@Model.Description</textarea>
+        </div>
+
+        <input type="hidden" name="CreatedAt" value="@Model.CreatedAt" />
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-admin-primary">
+                <i class="fas fa-save"></i> Update Topup
+            </button>
+            <a asp-action="Topups" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Batal
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Mapping game ke currency
+    const gameCurrencies = {
+        'MLBB': ['Diamond'],
+        'HOK': ['Diamond'],
+        'AOV': ['Voucher', 'Diamond'],
+        'PUBG': ['UC'],
+        'Free Fire': ['Diamond'],
+        'Roblox': ['Robux'],
+        'COC': ['Gem']
+    };
+
+    // Mapping nama game lengkap
+    const gameNames = {
+        'MLBB': 'Mobile Legends: Bang Bang',
+        'HOK': 'Honor of Kings',
+        'AOV': 'Arena of Valor',
+        'PUBG': 'PUBG Mobile',
+        'Free Fire': 'Free Fire',
+        'Roblox': 'Roblox',
+        'COC': 'Clash of Clans'
+    };
+
+    // Mapping jumlah topup untuk setiap game
+    const gameAmounts = {
+        'MLBB': [50, 100, 200, 250, 300, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000, 10000],
+        'HOK': [50, 100, 200, 250, 300, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000, 10000],
+        'AOV': [50, 100, 200, 250, 300, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000, 10000],
+        'PUBG': [60, 325, 660, 1800, 3850, 8100, 12000, 25000],
+        'Free Fire': [50, 100, 200, 250, 300, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000, 10000],
+        'Roblox': [80, 400, 800, 2000, 4500, 10000, 22000],
+        'COC': [100, 500, 1200, 2500, 6500, 14000]
+    };
+
+    // Mapping default image URLs untuk setiap game
+    const gameImages = {
+        'MLBB': 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=600&fit=crop',
+        'HOK': 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=600&fit=crop',
+        'AOV': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=600&fit=crop',
+        'PUBG': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=600&fit=crop',
+        'Free Fire': 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800&h=600&fit=crop',
+        'Roblox': 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&h=600&fit=crop',
+        'COC': 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=600&fit=crop'
+    };
+    
+    const currentAmount = @Model.Amount;
+    const currentCategory = '@Model.Category';
+    let currentGameType = '@Model.GameType';
+    
+    // Normalize untuk kompatibilitas
+    if (currentGameType === 'Mobile Legends: Bang Bang') currentGameType = 'MLBB';
+    if (currentGameType === 'Honor of Kings') currentGameType = 'HOK';
+    if (currentGameType === 'Arena of Valor') currentGameType = 'AOV';
+    if (currentGameType === 'PUBG Mobile') currentGameType = 'PUBG';
+    if (currentGameType === 'Clash of Clans') currentGameType = 'COC';
+
+    function updateCategoryOptions() {
+        const gameType = document.getElementById('gameType').value;
+        const categorySelect = document.getElementById('category');
+        const gameNameInput = document.getElementById('gameName');
+        const currencyLabel = document.getElementById('currencyLabel');
+        const amountHint = document.getElementById('amountHint');
+        const amountSelect = document.getElementById('amount');
+
+        // Clear existing options
+        categorySelect.innerHTML = '<option value="">Pilih Mata Uang</option>';
+        amountSelect.innerHTML = '<option value="">Pilih Jumlah</option>';
+
+        // Update game name
+        if (gameType && gameNames[gameType]) {
+            if (!gameNameInput.value || gameNameInput.value === currentGameType) {
+                gameNameInput.value = gameNames[gameType];
+            }
+        }
+
+        // Auto-fill image URL based on game type (only if empty)
+        if (gameType && gameImages[gameType] && !imageUrlInput.value) {
+            imageUrlInput.value = gameImages[gameType];
+        }
+
+        // Update currency options
+        if (gameType && gameCurrencies[gameType]) {
+            gameCurrencies[gameType].forEach(currency => {
+                const option = document.createElement('option');
+                option.value = currency;
+                option.textContent = currency;
+                if (currency === currentCategory) {
+                    option.selected = true;
+                }
+                categorySelect.appendChild(option);
+            });
+            if (gameCurrencies[gameType].length > 0) {
+                currencyLabel.textContent = '(' + gameCurrencies[gameType][0] + ')';
+                amountHint.textContent = 'Pilih jumlah ' + gameCurrencies[gameType][0] + ' atau isi manual';
+            }
+        } else {
+            // Set current category if exists
+            if (currentCategory) {
+                const option = document.createElement('option');
+                option.value = currentCategory;
+                option.textContent = currentCategory;
+                option.selected = true;
+                categorySelect.appendChild(option);
+            }
+        }
+
+        // Update amount options based on game type
+        let isCustom = true;
+        if (gameType && gameAmounts[gameType]) {
+            gameAmounts[gameType].forEach(amount => {
+                const option = document.createElement('option');
+                option.value = amount;
+                option.textContent = amount.toLocaleString('id-ID');
+                if (amount === currentAmount) {
+                    option.selected = true;
+                    isCustom = false;
+                }
+                amountSelect.appendChild(option);
+            });
+        } else {
+            // Default amounts
+            [50, 100, 200, 250, 300, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000, 10000].forEach(amount => {
+                const option = document.createElement('option');
+                option.value = amount;
+                option.textContent = amount.toLocaleString('id-ID');
+                if (amount === currentAmount) {
+                    option.selected = true;
+                    isCustom = false;
+                }
+                amountSelect.appendChild(option);
+            });
+        }
+        
+        // Always add custom option
+        const customOption = document.createElement('option');
+        customOption.value = 'custom';
+        customOption.textContent = 'Custom (Isi Manual)';
+        if (isCustom) {
+            customOption.selected = true;
+        }
+        amountSelect.appendChild(customOption);
+        
+        // Show input if custom
+        if (isCustom) {
+            document.getElementById('amountInput').style.display = 'block';
+            document.getElementById('amountInput').value = currentAmount;
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set current game type
+        if (currentGameType) {
+            const gameTypeSelect = document.getElementById('gameType');
+            for (let i = 0; i < gameTypeSelect.options.length; i++) {
+                if (gameTypeSelect.options[i].value === currentGameType) {
+                    gameTypeSelect.options[i].selected = true;
+                    break;
+                }
+            }
+        }
+        updateCategoryOptions();
+    });
+
+    // Update amount hint when category changes
+    document.getElementById('category').addEventListener('change', function() {
+        const category = this.value;
+        const amountHint = document.getElementById('amountHint');
+        if (category) {
+            amountHint.textContent = 'Pilih jumlah ' + category + ' atau isi manual';
+        }
+    });
+
+    function updateAmountInput() {
+        const amountSelect = document.getElementById('amount');
+        const amountInput = document.getElementById('amountInput');
+        if (amountSelect.value === 'custom') {
+            amountInput.style.display = 'block';
+            amountInput.required = true;
+            amountSelect.removeAttribute('name');
+            amountInput.setAttribute('name', 'Amount');
+            if (!amountInput.value) {
+                amountInput.value = currentAmount;
+            }
+        } else if (amountSelect.value) {
+            amountInput.style.display = 'none';
+            amountInput.required = false;
+            amountInput.removeAttribute('name');
+            amountSelect.setAttribute('name', 'Amount');
+        }
+    }
+
+    // Preview image function
+    function previewImage() {
+        const imageUrl = document.getElementById('imageUrl').value;
+        const previewDiv = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        
+        if (imageUrl) {
+            previewImg.src = imageUrl;
+            previewDiv.style.display = 'block';
+        } else {
+            alert('Masukkan URL gambar terlebih dahulu!');
+        }
+    }
+
+    // Auto preview when image URL changes
+    document.getElementById('imageUrl').addEventListener('blur', function() {
+        if (this.value) {
+            previewImage();
+        }
+    });
+</script>
+
